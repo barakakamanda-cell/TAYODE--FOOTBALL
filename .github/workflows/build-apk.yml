@@ -35,7 +35,7 @@ jobs:
           echo "Files in repository:"
           ls -la
 
-          if [ ! -f "TAYODE_FOOTBALL_BUILD_01_47.zip" ]; then
+          if [ ! -f "TAYODE_FOOTBALL_BUILD_01_47_FIXED.zip" ]; then
             echo "ERROR: TAYODE_FOOTBALL_BUILD_01_47.zip was not found."
             exit 1
           fi
@@ -50,7 +50,7 @@ jobs:
           rm -rf tayode_project
           mkdir -p tayode_project
 
-          unzip -q TAYODE_FOOTBALL_BUILD_01_47.zip -d tayode_project
+          unzip -q TAYODE_FOOTBALL_BUILD_01_47_FIXED.zip -d tayode_project
 
           echo "Extracted project structure:"
           find tayode_project -maxdepth 4 -type f | sort
