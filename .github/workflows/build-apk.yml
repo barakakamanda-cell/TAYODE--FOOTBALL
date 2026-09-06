@@ -19,59 +19,97 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Check ZIP file
+        shell: bash
+        run: |
+          set -e
+          echo "Files in repository:"
+          ls -la
+
+          if [ ! -f "TAYODE_FOOTBALL_BUILD_01_47.zip" ]; then
+            echo "ERROR: TAYODE_FOOTBALL_BUILD_01_47.zip was not found."
+            exit 1
+          fi
+
+          echo "ZIP file found successfully."
 
       - name: Extract TAYODE FOOTBALL project
         shell: bash
         run: |
           set -e
 
+          rm -rf tayode_project
           mkdir -p tayode_project
 
           unzip -q TAYODE_FOOTBALL_BUILD_01_47.zip -d tayode_project
 
-          echo "Extracted project:"
-          find tayode_project -maxdepth 3 -type f | head -100
+          echo "Extracted project structure:"
+          find tayode_project -maxdepth 4 -type f | sort
 
-      - name: Locate Gradle project
+      - name: Find Android project
         shell: bash
         run: |
           set -e
 
-          GRADLEW=$(find tayode_project -type f -name "gradlew" -print -quit)
+          PROJECT_DIR=$(find tayode_project -type f -name "settings.gradle*" -o -type f -name "build.gradle*" | head -n 1)
 
-          if [ -z "$GRADLEW" ]; then
-            echo "ERROR: gradlew was not found inside TAYODE_FOOTBALL_BUILD_01_47.zip"
-            echo "Checking extracted files:"
-            find tayode_project -maxdepth 5 -type f | sort
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "ERROR: Android Gradle project was not found."
             exit 1
           fi
 
-          PROJECT_DIR=$(dirname "$GRADLEW")
+          PROJECT_DIR=$(dirname "$PROJECT_DIR")
 
-          echo "Gradle wrapper found at:"
-          echo "$GRADLEW"
+          echo "Android project detected at:"
+          echo "$PROJECT_DIR"
 
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
-      - name: Make Gradle Wrapper executable
+      - name: Build TAYODE FOOTBALL APK
         shell: bash
         run: |
-          chmod +x "$PROJECT_DIR/gradlew"
+          set -e
 
-      - name: Build Debug APK
+          cd "$PROJECT_DIR"
+
+          echo "Building project from:"
+          pwd
+
+          if [ -f "./gradlew" ]; then
+            echo "Gradle Wrapper found. Using ./gradlew"
+            chmod +x ./gradlew
+            ./gradlew assembleDebug --stacktrace
+          else
+            echo "Gradle Wrapper not found."
+            echo "Using installed Gradle 8.9"
+            gradle assembleDebug --stacktrace
+          fi
+
+      - name: Find generated APK
         shell: bash
         run: |
-          cd "$PROJECT_DIR"
-          ./gradlew assembleDebug --stacktrace
+          set -e
+
+          echo "Searching for generated APK..."
+
+          find "$PROJECT_DIR" \
+            -type f \
+            -path "*/build/outputs/apk/debug/*.apk" \
+            -print
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: TAYODE-FOOTBALL-APK
           path: |
-            tayode_project/**/app/build/outputs/apk/debug/*.apk
+            **/build/outputs/apk/debug/*.apk
           if-no-files-found: error
