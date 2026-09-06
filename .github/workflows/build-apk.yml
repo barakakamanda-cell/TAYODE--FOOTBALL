@@ -38,4 +38,4 @@ jobs:
         with:
           name: TAYODE-FOOTBALL-APK
           path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
