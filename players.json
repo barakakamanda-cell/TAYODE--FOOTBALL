@@ -1,0 +1,25 @@
+{
+  "teams": [
+    {"name":"TAYODE United","country":"Tanzania","players":["Mbwana Samatta","Simon Msuva","Novatus Dismas","Hersi Said","Clatous Chota Chama"]},
+    {"name":"Tanzania Stars XI","country":"Tanzania","players":["Aishi Manula","Bakari Mwamnyeto","Dickson Job","Feisal Salum","Mzamiru Yassin"]},
+    {"name":"Young Africans","country":"Tanzania","players":["Djigui Diarra","Kibwana Shomari","Aziz Ki","Pacome Zouzoua","Clement Mzize"]},
+    {"name":"Simba SC","country":"Tanzania","players":["Aishi Manula","Shomari Kapombe","Innocent Bakari","Sadio Kanoute","Kibu Denis"]},
+    {"name":"Arsenal","country":"England","players":["Bukayo Saka","Martin Odegaard","Declan Rice","William Saliba","Gabriel Magalhaes"]},
+    {"name":"Liverpool","country":"England","players":["Mohamed Salah","Virgil van Dijk","Alisson Becker","Andrew Robertson","Dominik Szoboszlai"]},
+    {"name":"Manchester City","country":"England","players":["Erling Haaland","Kevin De Bruyne","Phil Foden","Rodri","Bernardo Silva"]},
+    {"name":"Manchester United","country":"England","players":["Bruno Fernandes","Marcus Rashford","Casemiro","Lisandro Martinez","Mason Mount"]},
+    {"name":"Chelsea","country":"England","players":["Cole Palmer","Enzo Fernandez","Reece James","Nicolas Jackson","Moises Caicedo"]},
+    {"name":"Barcelona","country":"Spain","players":["Robert Lewandowski","Pedri","Frenkie de Jong","Raphinha","Lamine Yamal"]},
+    {"name":"Real Madrid","country":"Spain","players":["Kylian Mbappe","Vinicius Junior","Jude Bellingham","Federico Valverde","Thibaut Courtois"]},
+    {"name":"Atletico Madrid","country":"Spain","players":["Antoine Griezmann","Julian Alvarez","Jan Oblak","Koke","Marcos Llorente"]},
+    {"name":"Bayern Munich","country":"Germany","players":["Harry Kane","Jamal Musiala","Joshua Kimmich","Manuel Neuer","Michael Olise"]},
+    {"name":"Borussia Dortmund","country":"Germany","players":["Serhou Guirassy","Julian Brandt","Karim Adeyemi","Nico Schlotterbeck","Gregor Kobel"]},
+    {"name":"PSG","country":"France","players":["Ousmane Dembele","Achraf Hakimi","Vitinha","Marquinhos","Khvicha Kvaratskhelia"]},
+    {"name":"Inter Milan","country":"Italy","players":["Lautaro Martinez","Nicolo Barella","Hakan Calhanoglu","Alessandro Bastoni","Marcus Thuram"]},
+    {"name":"AC Milan","country":"Italy","players":["Rafael Leao","Christian Pulisic","Theo Hernandez","Mike Maignan","Tijjani Reijnders"]},
+    {"name":"Juventus","country":"Italy","players":["Dusan Vlahovic","Kenan Yildiz","Federico Gatti","Manuel Locatelli","Andrea Cambiaso"]},
+    {"name":"Ajax","country":"Netherlands","players":["Davy Klaassen","Steven Berghuis","Brian Brobbey","Jordan Henderson","Wout Weghorst"]},
+    {"name":"Al Ahly","country":"Egypt","players":["Mohamed El Shenawy","Percy Tau","Emam Ashour","Marwan Attia","Wessam Abou Ali"]}
+  ],
+  "note":"Names reflect real-world players associated with these teams; roster accuracy can change by season and should be refreshed for later builds."
+}

@@ -1,0 +1,17 @@
+TAYODE FOOTBALL™
+BUILD 01.47
+Android Alpha Specification / Core Gameplay & Match Engine foundation
+
+Application ID: com.tayode.football
+Version: 0.1.47-alpha
+Version code: 147
+Min SDK: 28 (Android 9)
+Target SDK: 35
+Offline-first: YES
+Architecture: Native Android / Kotlin
+
+Package contents:
+- Android Studio project
+- Local team/player JSON database
+- Alpha UI shell
+- Build documentation
