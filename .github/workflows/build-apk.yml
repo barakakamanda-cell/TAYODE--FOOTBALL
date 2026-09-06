@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -24,18 +24,54 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Extract TAYODE FOOTBALL project
+        shell: bash
+        run: |
+          set -e
+
+          mkdir -p tayode_project
+
+          unzip -q TAYODE_FOOTBALL_BUILD_01_47.zip -d tayode_project
+
+          echo "Extracted project:"
+          find tayode_project -maxdepth 3 -type f | head -100
+
+      - name: Locate Gradle project
+        shell: bash
+        run: |
+          set -e
+
+          GRADLEW=$(find tayode_project -type f -name "gradlew" -print -quit)
+
+          if [ -z "$GRADLEW" ]; then
+            echo "ERROR: gradlew was not found inside TAYODE_FOOTBALL_BUILD_01_47.zip"
+            echo "Checking extracted files:"
+            find tayode_project -maxdepth 5 -type f | sort
+            exit 1
+          fi
+
+          PROJECT_DIR=$(dirname "$GRADLEW")
+
+          echo "Gradle wrapper found at:"
+          echo "$GRADLEW"
+
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
       - name: Make Gradle Wrapper executable
-        run: chmod +x ./gradlew
+        shell: bash
+        run: |
+          chmod +x "$PROJECT_DIR/gradlew"
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        shell: bash
+        run: |
+          cd "$PROJECT_DIR"
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: TAYODE-FOOTBALL-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: |
+            tayode_project/**/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
