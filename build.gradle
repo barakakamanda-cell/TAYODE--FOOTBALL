@@ -1,5 +1,26 @@
-plugins { id 'com.android.application'; id 'org.jetbrains.kotlin.android' }
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
-android { namespace 'com.tayode.football'; compileSdk 35
-    defaultConfig { applicationId 'com.tayode.football'; minSdk 28; targetSdk 35; versionCode 147; versionName '0.1.47-alpha' }
+android {
+    namespace 'com.tayode.football'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.tayode.football'
+        minSdk 28
+        targetSdk 35
+        versionCode 147
+        versionName '0.1.47-alpha'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 }
