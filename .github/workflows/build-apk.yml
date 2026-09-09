@@ -28,78 +28,132 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Check build environment
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "===== JAVA ====="
+          java -version
+
+          echo "===== GRADLE ====="
+          gradle --version
+
+          echo "===== REPOSITORY ====="
+          pwd
+          find . -maxdepth 3 -type f | sort
+
       - name: Check ZIP file
         shell: bash
         run: |
-          set -e
-          echo "Files in repository:"
-          ls -la
+          set -euxo pipefail
 
           if [ ! -f "TAYODE_FOOTBALL_BUILD_01_47_FIXED.zip" ]; then
-            echo "ERROR: TAYODE_FOOTBALL_BUILD_01_47.zip was not found."
+            echo "ERROR: TAYODE_FOOTBALL_BUILD_01_47_FIXED.zip was not found."
             exit 1
           fi
 
-          echo "ZIP file found successfully."
+          ls -lh "TAYODE_FOOTBALL_BUILD_01_47_FIXED.zip"
 
       - name: Extract TAYODE FOOTBALL project
         shell: bash
         run: |
-          set -e
+          set -euxo pipefail
 
           rm -rf tayode_project
           mkdir -p tayode_project
 
           unzip -q TAYODE_FOOTBALL_BUILD_01_47_FIXED.zip -d tayode_project
 
-          echo "Extracted project structure:"
-          find tayode_project -maxdepth 4 -type f | sort
+          echo "===== EXTRACTED PROJECT ====="
+          find tayode_project -maxdepth 6 -type f | sort
 
       - name: Find Android project
         shell: bash
         run: |
-          set -e
+          set -euxo pipefail
 
-          PROJECT_DIR=$(find tayode_project -type f -name "settings.gradle*" -o -type f -name "build.gradle*" | head -n 1)
+          PROJECT_DIR=""
+
+          while IFS= read -r file; do
+            candidate="$(dirname "$file")"
+
+            if [ -f "$candidate/settings.gradle" ] || \
+               [ -f "$candidate/settings.gradle.kts" ]; then
+              PROJECT_DIR="$candidate"
+              break
+            fi
+          done < <(find tayode_project -type f \( \
+            -name "settings.gradle" -o \
+            -name "settings.gradle.kts" \
+          \) | sort)
 
           if [ -z "$PROJECT_DIR" ]; then
             echo "ERROR: Android Gradle project was not found."
+            find tayode_project -maxdepth 6 -type f | sort
             exit 1
           fi
-
-          PROJECT_DIR=$(dirname "$PROJECT_DIR")
 
           echo "Android project detected at:"
           echo "$PROJECT_DIR"
 
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
-      - name: Build TAYODE FOOTBALL APK
+      - name: Inspect Gradle project
         shell: bash
         run: |
-          set -e
+          set -euxo pipefail
 
           cd "$PROJECT_DIR"
 
+          echo "===== PROJECT DIRECTORY ====="
+          pwd
+
+          echo "===== PROJECT FILES ====="
+          find . -maxdepth 4 -type f | sort
+
+          echo "===== GRADLE WRAPPER ====="
+          if [ -f "./gradlew" ]; then
+            echo "gradlew FOUND"
+            ls -lh ./gradlew
+          else
+            echo "gradlew NOT FOUND"
+          fi
+
+          if [ -f "./gradle/wrapper/gradle-wrapper.properties" ]; then
+            echo "gradle-wrapper.properties FOUND"
+            cat ./gradle/wrapper/gradle-wrapper.properties
+          else
+            echo "gradle-wrapper.properties NOT FOUND"
+          fi
+
+      - name: Build TAYODE FOOTBALL APK
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          cd "$PROJECT_DIR"
+
+          echo "===== BUILD START ====="
           echo "Building project from:"
           pwd
 
           if [ -f "./gradlew" ]; then
             echo "Gradle Wrapper found. Using ./gradlew"
             chmod +x ./gradlew
-            ./gradlew assembleDebug --stacktrace
+            ./gradlew assembleDebug --stacktrace --info
           else
             echo "Gradle Wrapper not found."
             echo "Using installed Gradle 8.9"
-            gradle assembleDebug --stacktrace
+            gradle assembleDebug --stacktrace --info
           fi
 
       - name: Find generated APK
         shell: bash
         run: |
-          set -e
+          set -euxo pipefail
 
-          echo "Searching for generated APK..."
+          echo "===== GENERATED APK SEARCH ====="
 
           find "$PROJECT_DIR" \
             -type f \
